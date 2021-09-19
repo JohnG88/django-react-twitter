@@ -21,6 +21,7 @@ def home_view(request, *args, **kwargs):
 def tweet_create_view(request, *args, **kwargs):
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
+    print('post data is', request.POST)
     # form won't do anything if not valid
     if form.is_valid():
         # if form is valid it will save it
