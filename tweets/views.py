@@ -25,6 +25,7 @@ def tweet_list_view(request, *args, **kwargs):
     # pythonic list
     tweets_list = [{'id': x.id, 'content': x.content, 'created': x.created.strftime("%m-%d-%Y, %H:%M:%S")} for x in qs]
     data = {
+        'isUser': False,
         'response': tweets_list
     }
     return JsonResponse(data)

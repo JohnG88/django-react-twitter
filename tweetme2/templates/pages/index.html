@@ -1,9 +1,60 @@
-{% extends "base.html" %}
-
-{% block head_title %}
-    Amazing Cuhhh!!!!
-{% endblock head_title %}
+{% extends "base.html" %} {% block head_title %} Amazing Cuhhh!!!! {% endblock head_title %} 
 
 {% block content %}
-    <h2>Welcome to tweetme 2</h2>
+
+<h2>Welcome to tweetme 2</h2>
+
+<div id="tweets">Loading...</div>
+
+<script>
+    const tweetsElement = document.getElementById("tweets");
+    //tweetsElement.innerHTML = 'Loading...'
+
+    //var el1 = "<h1>Hi there 1</h1>"
+    //var el2 = "<h1>Hi there 2</h1>"
+    //var el3 = "<h1>Hi there 3</h1>"
+    //tweetsElement.innerHTML = el1 + el2 + el3
+
+    
+
+    // New instance of class
+    const xhr = new XMLHttpRequest(); // like python, xhr = new SomeClass()
+    const method = "GET";
+    const url = "/tweets";
+    const responseType = "json";
+
+    function formatTweetElement(tweet) {
+        var formattedTweet =
+            "<div class='mb-4 tweet' id='tweet-" + tweet.id + "'>" +
+            "<h4>" +
+            tweet.content +
+            "</h4>" +
+            "<p>" +
+            tweet.created +
+            "</p></div>";
+
+        return formattedTweet;
+    }
+
+    xhr.responseType = responseType;
+    xhr.open(method, url);
+    xhr.onload = function () {
+        //console.log(xhr.response)
+        const serverResponse = xhr.response;
+        var listedItems = serverResponse.response; // array/list
+        var finalTweetStr = "";
+        var i;
+        for (i = 0; i < listedItems.length; i++) {
+            console.log(i);
+            console.log(listedItems[i]);
+            var tweetObj = listedItems[i]
+            var currentItem = formatTweetElement(tweetObj)
+            finalTweetStr += currentItem;
+        }
+        tweetsElement.innerHTML = finalTweetStr;
+        //console.log(listedItems)
+    };
+    xhr.send();
+</script>
+
 {% endblock content %}
