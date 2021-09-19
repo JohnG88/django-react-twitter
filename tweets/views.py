@@ -28,11 +28,12 @@ def home_view(request, *args, **kwargs):
 """
 
 def tweet_create_view(request, *args, **kwargs):
+    # print('ajax', request.is_ajax())
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
     # print('post data is', request.POST)
     next_url = request.POST.get('next') or None
-    print('next_url', next_url)
+    # print('next_url', next_url)
     # form won't do anything if not valid
     if form.is_valid():
         # if form is valid it will save it
@@ -40,6 +41,9 @@ def tweet_create_view(request, *args, **kwargs):
         obj = form.save(commit=False)
         # save data to database
         obj.save()
+        if request.is_ajax():
+            return JsonResponse({}, status=201) # 201=created items
+
         if next_url != None:
             return redirect(next_url)
         # clear form
