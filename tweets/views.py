@@ -1,7 +1,11 @@
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
+
 from .models import Tweet
+from .forms import TweetForm
+
+import random
 
 # Create your views here.
 
@@ -14,6 +18,22 @@ def home_view(request, *args, **kwargs):
     context = {'hello': hello}
     return render(request, 'pages/index.html', context, status=200)
 
+def tweet_create_view(request, *args, **kwargs):
+    # TweetForm can be initiated with data or none
+    form = TweetForm(request.POST or None)
+    # form won't do anything if not valid
+    if form.is_valid():
+        # if form is valid it will save it
+        # commit false does something, i have notes in other projects
+        obj = form.save(commit=False)
+        # save data to database
+        obj.save()
+        # clear form
+        form = TweetForm()
+
+    context = {'form': form}
+    return render(request, 'components/form.html', context)
+
 def tweet_list_view(request, *args, **kwargs):
     """
     REST API VIEW
@@ -23,7 +43,7 @@ def tweet_list_view(request, *args, **kwargs):
 
     qs = Tweet.objects.all()
     # pythonic list
-    tweets_list = [{'id': x.id, 'content': x.content, 'created': x.created.strftime("%m-%d-%Y, %H:%M:%S")} for x in qs]
+    tweets_list = [{'id': x.id, 'content': x.content, 'likes': random.randint(0, 1000), 'created': x.created.strftime("%m-%d-%Y, %H:%M:%S")} for x in qs]
     data = {
         'isUser': False,
         'response': tweets_list

@@ -17,6 +17,7 @@ Users
             - Image
         - Delete
         - Retweeting
+        - Liking
 
 3 Following / Followers
 
