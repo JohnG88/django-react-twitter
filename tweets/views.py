@@ -1,5 +1,5 @@
 from django.http.response import Http404, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 from .models import Tweet
@@ -18,10 +18,21 @@ def home_view(request, *args, **kwargs):
     context = {'hello': hello}
     return render(request, 'pages/index.html', context, status=200)
 
+
+"""
+    To create safe urls, first in settings.py in ALLOWED_HOSTS, in [] add host first ['127.0.0.1], then add domain name, ['127.0.0.1', '.mydomain.com']
+
+    Then n views.py on top, from django.utils.http import is_safe_url, from django.conf import settings, ALLOWED_HOSTS = settings.ALLOWED_HOSTS
+
+    In tweet_create_view under obj.save, rewrite line if next_url != None: into if next_url != None and is_safe_url(next_url, ALLOWED_HOSTS):
+"""
+
 def tweet_create_view(request, *args, **kwargs):
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
-    print('post data is', request.POST)
+    # print('post data is', request.POST)
+    next_url = request.POST.get('next') or None
+    print('next_url', next_url)
     # form won't do anything if not valid
     if form.is_valid():
         # if form is valid it will save it
@@ -29,6 +40,8 @@ def tweet_create_view(request, *args, **kwargs):
         obj = form.save(commit=False)
         # save data to database
         obj.save()
+        if next_url != None:
+            return redirect(next_url)
         # clear form
         form = TweetForm()
 
