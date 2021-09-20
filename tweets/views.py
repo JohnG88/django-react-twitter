@@ -28,6 +28,7 @@ def home_view(request, *args, **kwargs):
 """
 
 def tweet_create_view(request, *args, **kwargs):
+
     # print('ajax', request.is_ajax())
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
@@ -49,6 +50,9 @@ def tweet_create_view(request, *args, **kwargs):
             return redirect(next_url)
         # clear form
         form = TweetForm()
+    if form.errors:
+        if request.is_ajax():
+            return JsonResponse(form.errors, status=400)
 
     context = {'form': form}
     return render(request, 'components/form.html', context)
