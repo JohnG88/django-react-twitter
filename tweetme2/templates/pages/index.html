@@ -13,7 +13,7 @@
             <form action="/create-tweet" id="tweet-create-form" method="POST"class="form">
                 {% csrf_token %}
                 <input type="hidden" value="/" name="next" />
-                <textarea name="content" class="form-control" placeholder="Your tweet ..."></textarea>
+                <textarea required="required" name="content" class="form-control" placeholder="Your tweet ..."></textarea>
                 <button type="submit" class="btn btn-primary mt-2">Tweet</button>
             </form>
         </div>
@@ -43,9 +43,11 @@
                     const newTweetJson = xhr.response
                     //const newTweetJson = JSON.parse(newTweet)
                     const newTweetElement = formatTweetElement(newTweetJson)
-                    console.log(newTweetElement)
+                    //console.log(newTweetElement)
                     const ogHtml = tweetsContainerElement.innerHTML
                     tweetsContainerElement.innerHTML = newTweetElement + ogHtml
+                    // reset form
+                    myForm.reset()
                 }
             }
             xhr.send(myFormData)
