@@ -42,7 +42,8 @@ def tweet_create_view(request, *args, **kwargs):
         # save data to database
         obj.save()
         if request.is_ajax():
-            return JsonResponse({}, status=201) # 201=created items
+            # can also call serializer function from models.py
+            return JsonResponse(obj.serialize(), status=201) # 201=created items
 
         if next_url != None:
             return redirect(next_url)
@@ -60,8 +61,11 @@ def tweet_list_view(request, *args, **kwargs):
     """
 
     qs = Tweet.objects.all()
-    # pythonic list
-    tweets_list = [{'id': x.id, 'content': x.content, 'likes': random.randint(0, 1000), 'created': x.created.strftime("%m-%d-%Y, %H:%M:%S")} for x in qs]
+    # pythonic list, turning python object into python dictionary
+    # tweets_list = [{'id': x.id, 'content': x.content, 'likes': random.randint(0, 1000), 'created': x.created.strftime("%m-%d-%Y, %H:%M:%S")} for x in qs]
+
+    # since created def serialize in models.py can modify line above, it is sti;; converting python object into python dictionary
+    tweets_list = [x.serialize() for x in qs]
     data = {
         'isUser': False,
         'response': tweets_list
