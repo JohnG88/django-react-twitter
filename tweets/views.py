@@ -55,6 +55,21 @@ def tweet_detail_view(request, id, *args, **kwargs):
     serializer = TweetSerializer(obj)
     return Response(serializer.data, status=200)
 
+@api_view(['DELETE', 'POST'])
+@permission_classes(([IsAuthenticated]))
+def tweet_delete_view(request, id, *args, **kwargs):
+    qs = Tweet.objects.filter(id=id)
+    print('QS', qs)
+    if not qs.exists():
+        return Response({}, status=404)
+    qs = qs.filter(user=request.user)
+    # if doesn't exist then, it is forbidden to delete
+    if not qs.exists():
+        return Response({'message': 'You cannot delete this tweet.'}, status=401)
+    obj = qs.first()
+    obj.delete()
+    return Response({'message': 'Tweet removed'}, status=200)
+
 
 """
     To create safe urls, first in settings.py in ALLOWED_HOSTS, in [] add host first ['127.0.0.1], then add domain name, ['127.0.0.1', '.mydomain.com']
