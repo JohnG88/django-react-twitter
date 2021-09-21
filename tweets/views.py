@@ -2,6 +2,8 @@ from django.http.response import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
+from django.conf import settings
+
 from .models import Tweet
 from .forms import TweetForm
 
@@ -10,7 +12,7 @@ import random
 # Create your views here.
 
 def home_view(request, *args, **kwargs):
-    print(request.user)
+    print(request.user or None)
     # printing args kwargs, shows something in django terminal
     # for kwargs it shows {'id': 1}, which is from urls.py root location, which has 'tweets/<int:id>'
     # print(args, kwargs)
@@ -29,6 +31,13 @@ def home_view(request, *args, **kwargs):
 """
 
 def tweet_create_view(request, *args, **kwargs):
+    user = request.user
+    if not request.user.is_authenticated:
+        user = None
+        if request.is_ajax():
+            return JsonResponse({}, status=401)
+        # LOGIN_URL has default route of '/accounts/login/', to change it in setttings.py under ALLOWED_HOSTS add, LOGIN_URL = '/login' 
+        return redirect(settings.LOGIN_URL)
     # print('ajax', request.is_ajax())
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
@@ -40,6 +49,7 @@ def tweet_create_view(request, *args, **kwargs):
         # if form is valid it will save it
         # commit false does something, i have notes in other projects
         obj = form.save(commit=False)
+        obj.user = user # Annon User
         # save data to database
         obj.save()
         if request.is_ajax():
