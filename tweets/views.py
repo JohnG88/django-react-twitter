@@ -4,7 +4,9 @@ from django.http import HttpResponse
 
 from django.conf import settings
 from rest_framework.response import Response
-from rest_framework.decorators import api_view 
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 
 from .models import Tweet
 from .forms import TweetForm
@@ -13,6 +15,7 @@ from .serializers import TweetSerializer
 import random
 
 # Create your views here.
+# Check out REST API course from CodingEntrepreneurs
 
 def home_view(request, *args, **kwargs):
     print(request.user or None)
@@ -25,6 +28,8 @@ def home_view(request, *args, **kwargs):
     return render(request, 'pages/index.html', context, status=200)
 
 @api_view(['POST']) #http method the client == POST
+@permission_classes(([IsAuthenticated]))
+@authentication_classes([SessionAuthentication])
 def tweet_create_view(request, *args, **kwargs):
     serializer = TweetSerializer(data=request.POST)
     # raise_exception=True, will send back what error is
