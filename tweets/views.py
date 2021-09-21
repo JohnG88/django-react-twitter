@@ -6,6 +6,7 @@ from django.conf import settings
 
 from .models import Tweet
 from .forms import TweetForm
+from .serializers import TweetSerializer
 
 import random
 
@@ -21,6 +22,14 @@ def home_view(request, *args, **kwargs):
     context = {'hello': hello}
     return render(request, 'pages/index.html', context, status=200)
 
+def tweet_create_view(request, *args, **kwargs):
+    serializer = TweetSerializer(data=request.POST or None)
+    if serializer.is_valid():
+        obj = serializer.save(user=request.user)
+        return JsonResponse(serializer.data, status=201)
+
+    return JsonResponse({}, status=400)
+
 
 """
     To create safe urls, first in settings.py in ALLOWED_HOSTS, in [] add host first ['127.0.0.1], then add domain name, ['127.0.0.1', '.mydomain.com']
@@ -30,8 +39,9 @@ def home_view(request, *args, **kwargs):
     In tweet_create_view under obj.save, rewrite line if next_url != None: into if next_url != None and is_safe_url(next_url, ALLOWED_HOSTS):
 """
 
-def tweet_create_view(request, *args, **kwargs):
+def tweet_create_view_pure_django(request, *args, **kwargs):
     user = request.user
+    # if user is not authenticated then user = None(can't be anonymous)
     if not request.user.is_authenticated:
         user = None
         if request.is_ajax():

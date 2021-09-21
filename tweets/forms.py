@@ -1,8 +1,11 @@
 from django import forms
-
 from .models import Tweet
 
-MAX_TWEET_LENGTH = 240
+# to get max_length from settings.py(we added it to settings.py)
+from django.conf import settings
+MAX_TWEET_LENGTH = settings.MAX_TWEET_LENGTH
+
+
 
 class TweetForm(forms.ModelForm):
     class Meta:
