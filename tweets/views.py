@@ -10,6 +10,7 @@ import random
 # Create your views here.
 
 def home_view(request, *args, **kwargs):
+    print(request.user)
     # printing args kwargs, shows something in django terminal
     # for kwargs it shows {'id': 1}, which is from urls.py root location, which has 'tweets/<int:id>'
     # print(args, kwargs)
@@ -28,7 +29,6 @@ def home_view(request, *args, **kwargs):
 """
 
 def tweet_create_view(request, *args, **kwargs):
-
     # print('ajax', request.is_ajax())
     # TweetForm can be initiated with data or none
     form = TweetForm(request.POST or None)
