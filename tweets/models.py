@@ -11,12 +11,21 @@ from django.conf import settings
 # Then get User model
 User = settings.AUTH_USER_MODEL
 
+# historical measure like
+# createred a new table of TweetLike
+class TweetLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # Have to use 'Tweet', because tweet model is below TweetLike
+    tweet = models.ForeignKey('Tweet', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 # In shell to check for queries of user's username, use __(double underscore) ex.) qs = Tweet.objects.filter(user__username__iexact='John'), (username is the field name), (iexact means John and JOHN are the same)
 
 class Tweet (models.Model):
     # setting null=True and on_delete=models.SET_NULL, will still have data, have history, backup in database
     # learn how to backup database 
     user = models.ForeignKey(User, on_delete=models.CASCADE)# many users can have many tweets
+    likes = models.ManyToManyField(User, related_name='tweet_user', blank=True, through='TweetLike' )
     content = models.TextField(blank=True, null=True)
     image = models.FileField(upload_to='images/', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)

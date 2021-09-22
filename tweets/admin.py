@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import Tweet
+from .models import Tweet, TweetLike
 # Register your models here.
+
+class TweetLikeAdmin(admin.TabularInline):
+    model = TweetLike
 
 # This created searchbox in Tweets in django Admin(searches for username and email)
 class TweetAdmin(admin.ModelAdmin):
+    inlines = [TweetLikeAdmin]
     # Line below creates a display for user and content in Tweet in django admin
     # __str__ is showing in Tweet in django admin Tweet object(37), in models.py can change __str__ to something else( check out def __str__ in models.py) aka string representation of object
     list_display = ['__str__', 'user', 'content']
