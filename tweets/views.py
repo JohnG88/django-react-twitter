@@ -72,12 +72,13 @@ def tweet_delete_view(request, id, *args, **kwargs):
 
 @api_view(['POST'])
 @permission_classes(([IsAuthenticated]))
-def tweet_action_view(request, id, *args, **kwargs):
+def tweet_action_view(request, *args, **kwargs):
     '''
         id is required
         Action options are: like, unlike, retweet
     '''
-    serializer = TweetActionSerializer(data=request.POST)
+    # print(request.POST, request.data)
+    serializer = TweetActionSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
         id = data.get('id')
@@ -89,13 +90,14 @@ def tweet_action_view(request, id, *args, **kwargs):
     obj = qs.first()
     if action == 'like':
         obj.likes.add(request.user)
-    # if user is in obj.likes then remove user else add user
+        serializer = TweetSerializer(obj)
+        return Response(serializer.data, status=200)
     elif action == 'unlike':
         obj.likes.remove(request.user)
     elif action == 'retweet':
         pass
-        
-    return Response({'message': 'Tweet removed'}, status=200)
+    return Response({}, status=200)    
+    
 
 
 """
