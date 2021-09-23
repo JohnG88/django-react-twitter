@@ -10,7 +10,7 @@ from rest_framework.authentication import SessionAuthentication
 
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer
+from .serializers import TweetSerializer, TweetActionSerializer
 
 import random
 
@@ -68,6 +68,33 @@ def tweet_delete_view(request, id, *args, **kwargs):
         return Response({'message': 'You cannot delete this tweet.'}, status=401)
     obj = qs.first()
     obj.delete()
+    return Response({'message': 'Tweet removed'}, status=200)
+
+@api_view(['POST'])
+@permission_classes(([IsAuthenticated]))
+def tweet_action_toggle_view(request, id, *args, **kwargs):
+    '''
+        id is required
+        Action options are: like, unlike, retweet
+    '''
+    serializer = TweetActionSerializer(request.POST)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        id = data.get('id')
+        action = data.get('action')
+    qs = Tweet.objects.filter(id=id)
+    print('QS', qs)
+    if not qs.exists():
+        return Response({}, status=404)
+    obj = qs.first()
+    if action == 'like':
+        obj.likes.add(request.user)
+    # if user is in obj.likes then remove user else add user
+    elif action == 'unlike':
+        obj.likes.remove(request.user)
+    elif action == 'retweet':
+        pass
+        
     return Response({'message': 'Tweet removed'}, status=200)
 
 
