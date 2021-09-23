@@ -22,9 +22,34 @@ class TweetLike(models.Model):
 
 # In shell to check for queries of user's username, use __(double underscore) ex.) qs = Tweet.objects.filter(user__username__iexact='John'), (username is the field name), (iexact means John and JOHN are the same)
 
+'''
+    retweeting is tweeting to itself, referencing another tweet, so have to get a foreignkey of tweet(itself)
+
+    Ex.) comment
+            - Reply
+                - Sub Reply
+            - Reply
+            - Reply
+    - Comment is main thing and each Reply is refencing the Comment
+    - Also think of it as each Reply has a parent of Comment
+    - Reply is parent of Sub Reply
+
+    Another Example:
+        - Tweet
+            - Retweet
+                - Retweet of Retweet
+
+    But model is newest first
+    - Retweet of Retweet
+    - Retweet
+    - Tweet
+'''
+
 class Tweet (models.Model):
     # setting null=True and on_delete=models.SET_NULL, will still have data, have history, backup in database
     # learn how to backup database 
+    # first tweet won't have a parent only retweets
+    parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)# adding 'self' references same model(in this case Tweet)
     user = models.ForeignKey(User, on_delete=models.CASCADE)# many users can have many tweets
     likes = models.ManyToManyField(User, related_name='tweet_user', blank=True, through='TweetLike' )
     content = models.TextField(blank=True, null=True)
