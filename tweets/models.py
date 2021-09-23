@@ -61,9 +61,16 @@ class Tweet (models.Model):
     class Meta:
         ordering = ['-created']
 
+    @property
+    def is_retweet(self):
+        # boolean, if parent is not = to None then it is a retweet, if parent is = to None then it is not a retweet
+        return self.parent != None
+
     # def __str__(self):
         # return self.content
 
+
+    '''
     def serialize(self):
         return {
             'id': self.id,
@@ -71,7 +78,7 @@ class Tweet (models.Model):
             'created': self.created.strftime("%m-%d-%Y, %H:%M:%S"),
             'likes': random.randint(0, 1000),
         }
-
+    '''
     '''
         When adding user model and then creating superuser, python gives me, "Trying to add a non-nullable field 'user', can add null=True, or in our case can add 1, since we are only user create so far, need to learn how to do this better"
     '''

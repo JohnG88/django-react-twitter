@@ -17,6 +17,8 @@ Users
             - Image
         - Delete
         - Retweeting
+            - Read only serializer
+            - Create only serializer
         - Liking or Un-liking
 
 3 Following / Followers

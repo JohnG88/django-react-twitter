@@ -10,7 +10,7 @@ from rest_framework.authentication import SessionAuthentication
 
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer, TweetActionSerializer
+from .serializers import TweetSerializer, TweetActionSerializer, TweetCreateSerializer
 
 import random
 
@@ -31,7 +31,7 @@ def home_view(request, *args, **kwargs):
 @permission_classes(([IsAuthenticated]))
 @authentication_classes([SessionAuthentication])
 def tweet_create_view(request, *args, **kwargs):
-    serializer = TweetSerializer(data=request.POST)
+    serializer = TweetCreateSerializer(data=request.POST)
     # raise_exception=True, will send back what error is
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
