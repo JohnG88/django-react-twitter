@@ -45,7 +45,7 @@ class TweetLike(models.Model):
     - Tweet
 '''
 
-class Tweet (models.Model):
+class Tweet(models.Model):
     # setting null=True and on_delete=models.SET_NULL, will still have data, have history, backup in database
     # learn how to backup database 
     # first tweet won't have a parent only retweets
@@ -59,7 +59,7 @@ class Tweet (models.Model):
     # reverse ascending order to descending order by id, created, etc...
     # makemigrations and migrate when doing anything with class
     class Meta:
-        ordering = ['-created']
+        ordering = ['-id']
 
     @property
     def is_retweet(self):

@@ -137,6 +137,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_RENDERER_CLASSES = [
     'rest_framework.renderers.JSONRenderer',
 ]
+# DEFAULT_AUTHENTICATION_CLASSES = [
+#     'rest_framework.authentication.SessionAuthentication'
+# ]
 
 if DEBUG:
     DEFAULT_RENDERER_CLASSES += [
@@ -144,9 +147,7 @@ if DEBUG:
     ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication'
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
     # Below turns drf page into raw json
     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
 }

@@ -2,7 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 from .models import Tweet
 # to get max_length from settings.py(we added it to settings.py)
-from django.conf import settings
+
 MAX_TWEET_LENGTH = settings.MAX_TWEET_LENGTH
 TWEET_ACTION_OPTIONS = settings.TWEET_ACTION_OPTIONS
 
