@@ -41,6 +41,16 @@ function App() {
       loadTweets(myCallback)
     }, [])
 
+    function Tweet(props) {
+      const {tweet} = props
+      const className = props.className ? props.className : "col-10 mx-auto col-md-6"
+      return (
+          <div className={className}>
+              {tweet.id} - {tweet.content}
+          </div>
+      )
+    }
+
     return (
         <div className="App">
             <header className="App-header">
@@ -48,11 +58,11 @@ function App() {
                 <p>
                     Edit <code>src/App.js</code> and save to reload.
                 </p>
-                <p>
-                    {tweets.map((tweet, index) =>{
-                        return <li key={index}>{tweet.content}</li>
+                <div>
+                    {tweets.map((item, index) =>{
+                        return <Tweet tweet={item} key={`${index}-{item.id}`} className="col-12 col-md-10 mx-auto mb-4 tweet border rounded py-3" />
                     })}
-                </p>
+                </div>
                 <a
                     className="App-link"
                     href="https://reactjs.org"
