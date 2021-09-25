@@ -5,11 +5,19 @@ import { loadTweets } from "../lookup";
 export function TweetsComponent(props) {
     // createRef will allow to get value of textarea
     const textAreaRef = React.createRef()
+    const [newTweets, setNewTweets] = useState([])
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(event);
-        console.log(textAreaRef.current.value);
-        const newVal = textAreaRef.current.value
+        const newVal = textAreaRef.current.value;
+        let tempNewTweets = [...newTweets]
+        // push sends to end of array, unshift to top of array
+        tempNewTweets.unshift({
+            content: newVal,
+            likes: 0,
+            id: 12313
+        })
+        setNewTweets(tempNewTweets)
         console.log(newVal);
         textAreaRef.current.value = ''
     }
@@ -24,24 +32,34 @@ export function TweetsComponent(props) {
                     <button type="submit"className="btn btn-primary my-3">Tweet</button>
                 </form>
             </div>
-            <TweetsList />
+            <TweetsList newTweets={newTweets}/>
         </div>
     )
 }
 
 export function TweetsList(props) {
-    const [tweets, setTweets] = useState([{ content: 123 }]);
+    const [tweetsInit, setTweetsInit] = useState([]);
+    const [tweets, setTweets] = useState([])
+
+    useEffect(() => {
+        const final = [...props.newTweets].concat(tweetsInit)
+        if (final.length !== tweets.length) {
+            setTweets(final)
+        }
+        
+    },[props.newTweets, tweets, tweetsInit])
+
     useEffect(() => {
         const myCallback = (response, status) => {
             // console.log(response, status)
             if (status === 200) {
-                setTweets(response);
+                setTweetsInit(response);
             } else {
                 alert("There was an error!");
             }
         };
         loadTweets(myCallback);
-    }, []);
+    }, [tweetsInit]);
     return tweets.map((item, index) => {
         return (
             <Tweet
