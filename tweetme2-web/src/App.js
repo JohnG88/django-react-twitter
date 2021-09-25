@@ -31,7 +31,7 @@ function App() {
 
     useEffect(() => {
       const myCallback = (response, status) => {
-        console.log(response, status)
+        // console.log(response, status)
         if (status === 200) {
           setTweets(response)
         } else {
@@ -41,13 +41,27 @@ function App() {
       loadTweets(myCallback)
     }, [])
 
+    function ActionBtn(props) {
+      const className = props.className ? props.className : "btn btn-primary btn-sm"
+      const {tweet, action} = props;
+      return (
+          action.type === 'like' ? <button className={className}> {tweet.likes} Like</button> : null
+      )
+  }
+
     function Tweet(props) {
       const {tweet} = props
       const className = props.className ? props.className : "col-10 mx-auto col-md-6"
       return (
-          <div className={className}>
-              {tweet.id} - {tweet.content}
-          </div>
+        <>
+            <div className={className}>
+                <p>{tweet.id} - {tweet.content}</p>
+                <div className="btn btn-group">
+                    <ActionBtn tweet={tweet} action={{type: 'like'}}/>
+                    <ActionBtn tweet={tweet} action={{type: 'unlike'}}/>
+                </div>
+            </div>
+        </>
       )
     }
 
