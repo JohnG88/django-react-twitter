@@ -1,0 +1,34 @@
+To implement react into django:
+
+Create static folder in django root
+
+In settings.py add:
+    STATICFILES_DIRS = [
+    BASE_DIR / 'tweetme2/static'
+    ]
+
+    STATIC_ROOT = BASE_DIR / 'tweetme2/static-root'
+
+in root urls.py add:
+    from django.conf import settings
+    from django.conf.urls.static import static
+
+    if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+Then in terminal run
+    py manage.py collectstatic
+    - You should see in terminal:
+        number static files copied to url/tweetme2/static-root
+
+From build static folder get the css, js, media folders
+From build folder the index.html, copy everything in it and in root templates create react.html and paste all of index.html
+
+Then create the url in root urls.py add:
+    from django.views.generic import TemplateView
+    - And then create the url path for react.html
+        path('react/', TemplateView.as_view(template_name='react.html')),
+
+NOTE: react.html keeps rendering 5-6 times each second, idk what is happening
+
+

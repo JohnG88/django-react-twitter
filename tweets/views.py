@@ -29,7 +29,7 @@ def home_view(request, *args, **kwargs):
     username = None
     if request.user.is_authenticated:
         username = request.user.username
-    return render(request, "pages/home.html", context={"username": username}, status=200)
+    return render(request, "pages/index.html", context={"username": username}, status=200)
 
 @api_view(['POST']) #http method the client == POST
 @permission_classes(([IsAuthenticated]))
