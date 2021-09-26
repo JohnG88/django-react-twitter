@@ -4,58 +4,62 @@ import { apiTweetAction, apiTweetCreate, apiTweetList } from "./lookup";
 
 export function TweetsComponent(props) {
     // createRef will allow to get value of textarea
-    const textAreaRef = React.createRef()
-    const [newTweets, setNewTweets] = useState([])
-    
+    const textAreaRef = React.createRef();
+    const [newTweets, setNewTweets] = useState([]);
+
     const handleBackendUpdate = (response, status) => {
         // backend api response handler
-        let tempNewTweets = [...newTweets]
+        let tempNewTweets = [...newTweets];
         if (status === 201) {
             // push sends to end of array, unshift to top of array
-            tempNewTweets.unshift(response)
-            setNewTweets(tempNewTweets)
+            tempNewTweets.unshift(response);
+            setNewTweets(tempNewTweets);
         } else {
-            console.log(response)
-            alert('An error occurred please try again.')
+            console.log(response);
+            alert("An error occurred please try again.");
         }
-    }
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(event);
         const newVal = textAreaRef.current.value;
         // backend api request
-        apiTweetCreate(newVal, handleBackendUpdate) 
-        textAreaRef.current.value = ''
-    }
+        apiTweetCreate(newVal, handleBackendUpdate);
+        textAreaRef.current.value = "";
+    };
 
     return (
         <div className={props.className}>
             <div className="col-12 mb-3 ">
                 <form onSubmit={handleSubmit}>
-                    <textarea ref={textAreaRef} required={true} className="form-control" name="tweet">
-                        
-                    </textarea>
-                    <button type="submit"className="btn btn-primary my-3">Tweet</button>
+                    <textarea
+                        ref={textAreaRef}
+                        required={true}
+                        className="form-control"
+                        name="tweet"
+                    ></textarea>
+                    <button type="submit" className="btn btn-primary my-3">
+                        Tweet
+                    </button>
                 </form>
             </div>
-            <TweetsList newTweets={newTweets}/>
+            <TweetsList newTweets={newTweets} />
         </div>
-    )
+    );
 }
 
 export function TweetsList(props) {
     const [tweetsInit, setTweetsInit] = useState([]);
-    const [tweets, setTweets] = useState([])
-    const [tweetsDidSet, setTweetsDidSet] = useState(false)
+    const [tweets, setTweets] = useState([]);
+    const [tweetsDidSet, setTweetsDidSet] = useState(false);
 
     useEffect(() => {
-        const final = [...props.newTweets].concat(tweetsInit)
+        const final = [...props.newTweets].concat(tweetsInit);
         if (final.length !== tweets.length) {
-            setTweets(final)
+            setTweets(final);
         }
-        
-    },[props.newTweets, tweets, tweetsInit])
+    }, [props.newTweets, tweets, tweetsInit]);
 
     useEffect(() => {
         if (tweetsDidSet === false) {
@@ -63,7 +67,7 @@ export function TweetsList(props) {
                 // console.log(response, status)
                 if (status === 200) {
                     setTweetsInit(response);
-                    setTweetsDidSet(true)
+                    setTweetsDidSet(true);
                 } else {
                     alert("There was an error!");
                 }
@@ -96,21 +100,36 @@ export function ActionBtn(props) {
     const display =
         action.type === "like" ? `${likes} ${actionDisplay}` : actionDisplay;
     const handleActionBackendEvent = (response, status) => {
-        console.log(response, status)
+        console.log(response, status);
         if (status === 200) {
-            setLikes(response.likes)
+            setLikes(response.likes);
             // setUserLike(true)
         }
-    }
+    };
     const handleClick = (event) => {
         event.preventDefault();
-        apiTweetAction(tweet.id, action.type, handleActionBackendEvent)
+        apiTweetAction(tweet.id, action.type, handleActionBackendEvent);
     };
     return (
         <button className={className} onClick={handleClick}>
             {display}
         </button>
     );
+}
+
+export function ParentTweet(props) {
+    const {tweet} = props;
+    return <> 
+            {tweet.parent ? <div className="row">
+                <div className='col-11 mx-auto p-3 border rounded'>
+                    <p className="mb-0 text-muted small">Retweet</p>
+                    <Tweet
+                        className=" "
+                        tweet={tweet.parent}
+                    />
+                </div>
+            </div> : null}
+    </>
 }
 
 export function Tweet(props) {
@@ -121,9 +140,12 @@ export function Tweet(props) {
     return (
         <>
             <div className={className}>
-                <p>
-                    {tweet.id} - {tweet.content}
-                </p>
+                <div>
+                    <p>
+                        {tweet.id} - {tweet.content}
+                    </p>
+                    <ParentTweet tweet={tweet} />
+                </div>
                 <div className="btn btn-group">
                     <ActionBtn
                         tweet={tweet}
