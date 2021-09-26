@@ -40,6 +40,7 @@ function lookup(method, endpoint, callback, data) {
         console.log(e);
         callback({ message: "The request was an error." }, 400);
     };
+    // console.log(jsonData);
     xhr.send(jsonData);
 }
 

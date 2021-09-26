@@ -35,7 +35,9 @@ def home_view(request, *args, **kwargs):
 @permission_classes(([IsAuthenticated]))
 #@authentication_classes([SessionAuthentication])
 def tweet_create_view(request, *args, **kwargs):
-    serializer = TweetCreateSerializer(data=request.POST)
+    # data = request.data used to be data=request.POST, is changed now that react has been integrated
+    # print(request.data)
+    serializer = TweetCreateSerializer(data=request.data)
     # raise_exception=True, will send back what error is
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)

@@ -12,16 +12,19 @@ export function TweetsComponent(props) {
         console.log(event);
         const newVal = textAreaRef.current.value;
         let tempNewTweets = [...newTweets]
+        console.log('new value', newVal);
         createTweet(newVal, (response, status) => {
+            console.log(response, status);
             if (status === 201) {
                 // push sends to end of array, unshift to top of array
                 tempNewTweets.unshift(response)
+                setNewTweets(tempNewTweets)
             } else {
                 console.log(response)
                 alert('An error occurred please try again.')
             }
         })
-        setNewTweets(tempNewTweets)
+        
         console.log(newVal);
         textAreaRef.current.value = ''
     }
