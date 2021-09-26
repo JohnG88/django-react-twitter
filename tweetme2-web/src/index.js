@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+// import App from "./App";
 import { TweetsComponent } from "./tweets";
 import reportWebVitals from "./reportWebVitals";
 
@@ -11,13 +11,12 @@ import reportWebVitals from "./reportWebVitals";
 //     </React.StrictMode>,
 //     document.getElementById("root")
 // );
-
+// lines below help to be able to use attributes from index.html div
+const e = React.createElement
 const tweetsEl = document.getElementById("tweetme-2");
 if (tweetsEl) {
-    ReactDOM.render(
-        <React.StrictMode>
-            <TweetsComponent />
-        </React.StrictMode>,
+    console.log(tweetsEl.dataset)
+    ReactDOM.render(e(TweetsComponent, tweetsEl.dataset),
         tweetsEl
     );
 }
