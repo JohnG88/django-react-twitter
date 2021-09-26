@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from "react";
 
-import { createTweet, loadTweets } from "../lookup";
+import { apiTweetAction, apiTweetCreate, apiTweetList } from "./lookup";
 
 export function TweetsComponent(props) {
     // createRef will allow to get value of textarea
     const textAreaRef = React.createRef()
     const [newTweets, setNewTweets] = useState([])
     
+    const handleBackendUpdate = (response, status) => {
+        // backend api response handler
+        let tempNewTweets = [...newTweets]
+        if (status === 201) {
+            // push sends to end of array, unshift to top of array
+            tempNewTweets.unshift(response)
+            setNewTweets(tempNewTweets)
+        } else {
+            console.log(response)
+            alert('An error occurred please try again.')
+        }
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(event);
         const newVal = textAreaRef.current.value;
-        let tempNewTweets = [...newTweets]
-        console.log('new value', newVal);
-        createTweet(newVal, (response, status) => {
-            console.log(response, status);
-            if (status === 201) {
-                // push sends to end of array, unshift to top of array
-                tempNewTweets.unshift(response)
-                setNewTweets(tempNewTweets)
-            } else {
-                console.log(response)
-                alert('An error occurred please try again.')
-            }
-        })
-        
-        console.log(newVal);
+        // backend api request
+        apiTweetCreate(newVal, handleBackendUpdate) 
         textAreaRef.current.value = ''
     }
 
@@ -59,7 +59,7 @@ export function TweetsList(props) {
 
     useEffect(() => {
         if (tweetsDidSet === false) {
-            const myCallback = (response, status) => {
+            const handleTweetListLookup = (response, status) => {
                 // console.log(response, status)
                 if (status === 200) {
                     setTweetsInit(response);
@@ -68,7 +68,7 @@ export function TweetsList(props) {
                     alert("There was an error!");
                 }
             };
-            loadTweets(myCallback);
+            apiTweetList(handleTweetListLookup);
         }
     }, [tweetsInit, tweetsDidSet, setTweetsDidSet]);
     return tweets.map((item, index) => {
@@ -86,7 +86,7 @@ export function ActionBtn(props) {
     const { tweet, action } = props;
     // remember likes is variable and setLikes is to update variable
     const [likes, setLikes] = useState(tweet.likes ? tweet.likes : 0);
-    const [userLike, setUserLike] = useState(tweet.userLike === true ? true : false);
+    // const [userLike, setUserLike] = useState(tweet.userLike === true ? true : false);
     const className = props.className
         ? props.className
         : "btn btn-primary btn-sm";
@@ -95,18 +95,16 @@ export function ActionBtn(props) {
     // if action type = 'like' show tweet likes actionDisplay, else show actionDisplay
     const display =
         action.type === "like" ? `${likes} ${actionDisplay}` : actionDisplay;
+    const handleActionBackendEvent = (response, status) => {
+        console.log(response, status)
+        if (status === 200) {
+            setLikes(response.likes)
+            // setUserLike(true)
+        }
+    }
     const handleClick = (event) => {
         event.preventDefault();
-        if (action.type === "like") {
-            if (userLike === true) {
-                // perhaps unlike it?
-                setLikes(likes - 1);
-                setUserLike(false);
-            } else {
-                setLikes(likes + 1);
-                setUserLike(true);
-            }
-        }
+        apiTweetAction(tweet.id, action.type, handleActionBackendEvent)
     };
     return (
         <button className={className} onClick={handleClick}>
