@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 
-import { loadTweets } from "../lookup";
+import { createTweet, loadTweets } from "../lookup";
 
 export function TweetsComponent(props) {
     // createRef will allow to get value of textarea
     const textAreaRef = React.createRef()
     const [newTweets, setNewTweets] = useState([])
+    
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(event);
         const newVal = textAreaRef.current.value;
         let tempNewTweets = [...newTweets]
-        // push sends to end of array, unshift to top of array
-        tempNewTweets.unshift({
-            content: newVal,
-            likes: 0,
-            id: 12313
+        createTweet(newVal, (response, status) => {
+            if (status === 201) {
+                // push sends to end of array, unshift to top of array
+                tempNewTweets.unshift(response)
+            } else {
+                console.log(response)
+                alert('An error occurred please try again.')
+            }
         })
         setNewTweets(tempNewTweets)
         console.log(newVal);
@@ -40,6 +44,7 @@ export function TweetsComponent(props) {
 export function TweetsList(props) {
     const [tweetsInit, setTweetsInit] = useState([]);
     const [tweets, setTweets] = useState([])
+    const [tweetsDidSet, setTweetsDidSet] = useState(false)
 
     useEffect(() => {
         const final = [...props.newTweets].concat(tweetsInit)
@@ -50,16 +55,19 @@ export function TweetsList(props) {
     },[props.newTweets, tweets, tweetsInit])
 
     useEffect(() => {
-        const myCallback = (response, status) => {
-            // console.log(response, status)
-            if (status === 200) {
-                setTweetsInit(response);
-            } else {
-                alert("There was an error!");
-            }
-        };
-        loadTweets(myCallback);
-    }, [tweetsInit]);
+        if (tweetsDidSet === false) {
+            const myCallback = (response, status) => {
+                // console.log(response, status)
+                if (status === 200) {
+                    setTweetsInit(response);
+                    setTweetsDidSet(true)
+                } else {
+                    alert("There was an error!");
+                }
+            };
+            loadTweets(myCallback);
+        }
+    }, [tweetsInit, tweetsDidSet, setTweetsDidSet]);
     return tweets.map((item, index) => {
         return (
             <Tweet
