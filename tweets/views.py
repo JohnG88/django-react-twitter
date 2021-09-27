@@ -106,7 +106,7 @@ def tweet_action_view(request, *args, **kwargs):
 @api_view(['GET'])
 def tweet_list_view(request, *args, **kwargs):
     qs = Tweet.objects.all()
-    # belo is lookin for parameter ?username=john
+    # below is lookin for parameter ?username=john
     username = request.GET.get('username')
     if username != None:
         qs = qs.filter(user__username__iexact=username)
