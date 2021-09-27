@@ -1,7 +1,7 @@
 import { ActionBtn } from './buttons'
 import {Tweet} from './detail'
 import {TweetsList} from './list'
-import { TweetsComponent} from './components';
+import { TweetsComponent, TweetDetailComponent} from './components';
 import {TweetCreate} from './create'
 
 
@@ -10,5 +10,6 @@ export {
     Tweet,
     TweetsList,
     TweetsComponent,
+    TweetDetailComponent,
     TweetCreate
 }
