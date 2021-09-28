@@ -18,7 +18,7 @@ import random
 # Check out REST API course from CodingEntrepreneurs
 
 def home_view(request, *args, **kwargs):
-    print(request.user or None)
+    # print(request.user or None)
     # printing args kwargs, shows something in django terminal
     # for kwargs it shows {'id': 1}, which is from urls.py root location, which has 'tweets/<int:id>'
     # print(args, kwargs)
@@ -30,6 +30,17 @@ def home_view(request, *args, **kwargs):
     if request.user.is_authenticated:
         username = request.user.username
     return render(request, "pages/index.html", context={"username": username}, status=200)
+
+def local_tweets_list_view(request, *args, **kwargs):
+    return render(request, "tweets/list.html")
+
+def local_tweets_detail_view(request, tweet_id, *args, **kwargs):
+    return render(request, "tweets/detail.html", context={"tweet_id": tweet_id})
+
+def local_tweets_profile_view(request, username, *args, **kwargs):
+    
+    return render(request, "tweets/profile.html", context={"profile_username": username})
+
 
 @api_view(['POST']) #http method the client == POST
 @permission_classes(([IsAuthenticated]))
