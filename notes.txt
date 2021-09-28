@@ -32,3 +32,5 @@ Then create the url in root urls.py add:
 NOTE: react.html keeps rendering 5-6 times each second, idk what is happening
 
 
+Everytime you want to check react app in dajngo you , have to run build in react terminal then from /build get static folder and switch it with django static folder, then add the bottom two stript tags from react app build folder, index.html file and add them to django root react folder in the js.html file
+
