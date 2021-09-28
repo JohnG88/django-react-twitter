@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # internal
     'tweets',
     'accounts',
+    'profiles',
     # third party
     'corsheaders',
     'rest_framework',
