@@ -43,7 +43,7 @@ def register_view(request, *args, **kwargs):
         #  can send verification email to user
         login(request, user)
         return redirect('/')
-        # print(form.cleaned_data)
+    print(form.cleaned_data)
         # username = form.cleaned_data.get('username')
         # can also use User.objects.create(username=username)
     context = {'form': form, 'btn_label': 'Register', 'title': 'Register'}
