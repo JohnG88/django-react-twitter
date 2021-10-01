@@ -22,7 +22,7 @@ class Profile(models.Model):
     '''
         project_obj = Profile.objects.first()
         project_obj.followers.all() -> All users following this profile
-        user.following.all() -> all users I follow
+        user.following.all() -> all user profiles I follow
     '''
 
 # method is user_is_saved(so you have to use the function name)
