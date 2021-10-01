@@ -50,7 +50,7 @@ class Tweet(models.Model):
     # learn how to backup database 
     # first tweet won't have a parent only retweets
     parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)# adding 'self' references same model(in this case Tweet)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)# many users can have many tweets
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweets')# many users can have many tweets
     likes = models.ManyToManyField(User, related_name='tweet_user', blank=True, through='TweetLike' )
     content = models.TextField(blank=True, null=True)
     image = models.FileField(upload_to='images/', blank=True, null=True)
@@ -133,3 +133,47 @@ class Tweet(models.Model):
         >>> obj.likes.all()
         <QuerySet []>
 '''
+
+# Below trying to create many-to-many connection
+'''
+    from django.contrib.auth import get_user_model
+    >>> User = get_user_model()
+    >>> j = User.objects.first()
+    >>> j
+    <User: John>
+    # so below is user through tweet model, and if there is no related_name in this user field under Tweet model then you have to use model name(lowercased)_set, in this case (tweet_set)
+    # translation below is user through tweet model
+    j.tweet_set.all() - will give you all tweets of user
+'''
+
+# Using related_name
+'''
+    In models from many-to-many connection add a realted_name attribute
+    In this case we added related_name='tweets'
+    Instead of using(from example above), j.tweet_set.all()
+    we can use j.tweets.all(), and get the same outcome
+'''
+
+# getting all liked tweets
+'''
+    j.tweetlike_set.all()
+'''
+
+# can create above queryset into a variable with a one liner for loop
+# not very efficient
+'''
+    my_likes = [x.tweet for x in j.tweetlike_set.all()]
+    so now my_likes will do the same as j.tweetlike_set.all()
+'''
+
+# the best way
+'''
+    since the like field in Tweet model has a related_name='tweet-user', below is the most efficient way to queryset
+    j.tweet_user.all()
+'''
+
+# efficient way to get length of queryset
+'''
+    j.tweet_user.count()
+'''
+
