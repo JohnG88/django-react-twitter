@@ -88,18 +88,13 @@ def tweet_action_view(request, *args, **kwargs):
         return Response(serializer.data, status=201)
     return Response({}, status=200)   
 
+# Q allows for multiple query filters
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tweet_feed_view(request, *args, **kwargs):
     user = request.user
-    profiles = user.following.all()
-    followed_users_id = []
-    if profiles.exists():
-        # line below not very efficient
-        followed_users_id = [x.user.id for x in profiles]
-        followed_users_id.append(user.id)
-    # using user__id__in will allow to view all objects in a list and find all related
-    qs = Tweet.objects.filter(user__id__in=followed_users_id).order_by('-created')
+    # check in models.py, TweetQuerySet and Tweetmanager
+    qs = Tweet.objects.feed(user)
     serializer = TweetSerializer(qs, many=True)
     return Response(serializer.data, status=200)
 
@@ -109,7 +104,11 @@ def tweet_list_view(request, *args, **kwargs):
     # below is lookin for parameter ?username=john
     username = request.GET.get('username')
     if username != None:
+        
         qs = qs.filter(user__username__iexact=username)
+        # efficient way of using line above
+        # check in models.py, TweetQuerySet and Tweetmanager
+        qs = qs.by_username(username)
     serializer = TweetSerializer(qs, many=True)
     return Response(serializer.data, status=200)
     

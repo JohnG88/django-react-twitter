@@ -4,6 +4,7 @@ from django.db import models
 
 # Another approach of getting User model
 from django.conf import settings
+from django.db.models import Q
 
 
 # Create your models here.
@@ -19,6 +20,39 @@ class TweetLike(models.Model):
     # Have to use 'Tweet', because tweet model is below TweetLike
     tweet = models.ForeignKey('Tweet', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+# Both classes below allow to add to db and query db very effectively
+
+# The Queryset is the all,filter, etc from Tweet.objects.all(), Tweet.objects.filter(), etc
+class TweetQuerySet(models.QuerySet):
+    def by_username(self, username):
+        return self.filter(user__username__iexact=username)
+
+    def feed(self, user):
+        profiles_exist = user.following.exists()
+        followed_users_id = []
+        if profiles_exist:
+            # line below not very efficient
+            # followed_users_id = #[x.user.id for x in profiles]
+            # better query below, cuz just finding user id instead of whole user data
+            followed_users_id = user.following.values_list('user__id', flat=True)
+
+        # using user__id__in will allow to view all objects in a list and find all related
+        # lin below says filter Tweet objects that have user id in followed user's id or user of user, .distinct() means no duplicates, order by created data
+        # self replaces Model.objects
+        return self.filter(
+            Q(user__id__in=followed_users_id) | Q(user=user)
+            
+            ).distinct().order_by('-created')
+
+# Manager is like objects from Tweet.objects.all()
+class TweetManager(models.Manager):
+    # pass in TweetQuerySet
+    def get_queryset(self, *args, **kwargs):
+        return TweetQuerySet(self.model, using=self._db)
+
+    def feed(self, user):
+        return self.get_queryset().feed(user)
 
 # In shell to check for queries of user's username, use __(double underscore) ex.) qs = Tweet.objects.filter(user__username__iexact='John'), (username is the field name), (iexact means John and JOHN are the same)
 
@@ -55,6 +89,8 @@ class Tweet(models.Model):
     content = models.TextField(blank=True, null=True)
     image = models.FileField(upload_to='images/', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = TweetManager()
     
     # reverse ascending order to descending order by id, created, etc...
     # makemigrations and migrate when doing anything with class
