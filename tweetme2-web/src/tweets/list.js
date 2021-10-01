@@ -5,6 +5,8 @@ import {Tweet} from './detail'
 export function TweetsList(props) {
     const [tweetsInit, setTweetsInit] = useState([]);
     const [tweets, setTweets] = useState([]);
+    // useState is set to null because next url will eventually become null
+    const [nextUrl, setNextUrl] = useState(null)
     const [tweetsDidSet, setTweetsDidSet] = useState(false);
 
     useEffect(() => {
@@ -19,7 +21,8 @@ export function TweetsList(props) {
             const handleTweetListLookup = (response, status) => {
                 // console.log(response, status)
                 if (status === 200) {
-                    setTweetsInit(response);
+                    setNextUrl(response.next)
+                    setTweetsInit(response.results);
                     setTweetsDidSet(true);
                 } else {
                     alert("There was an error!");
@@ -37,14 +40,17 @@ export function TweetsList(props) {
         updateFinalTweets.unshift(tweets)
         setTweets(updateFinalTweets)
     }
-    return tweets.map((item, index) => {
-        return (
-            <Tweet
-                tweet={item}
-                didRetweet={handleDidRetweet}
-                key={`${index}-{item.id}`}
-                className="col-12 col-md-10 mx-auto mb-4 tweet border rounded py-3"
-            />
-        );
-    });
+    return <React.Fragment>
+        {tweets.map((item, index) => {
+            return (
+                <Tweet
+                    tweet={item}
+                    didRetweet={handleDidRetweet}
+                    key={`${index}-{item.id}`}
+                    className="col-12 col-md-10 mx-auto mb-4 tweet border rounded py-3"
+                />
+            );
+        })}
+        {nextUrl !== null && <button className='btn btn-outline-primary'>Load next</button>}
+    </React.Fragment>
 }
