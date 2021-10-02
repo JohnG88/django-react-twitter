@@ -14,10 +14,10 @@ def home_view(request, *args, **kwargs):
     # hello = 'Hello World'
     # context = {'hello': hello}
     # return render(request, 'pages/index.html', context, status=200)
-    username = None
-    if request.user.is_authenticated:
-        username = request.user.username
-    return render(request, "pages/index.html", context={"username": username}, status=200)
+    # username = None
+    # if request.user.is_authenticated:
+    #     username = request.user.username
+    return render(request, "pages/feed.html", status=200)
 
 def tweets_list_view(request, *args, **kwargs):
     return render(request, "tweets/list.html")

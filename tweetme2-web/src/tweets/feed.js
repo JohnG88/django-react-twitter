@@ -49,10 +49,8 @@ export function FeedList(props) {
                     const newTweets = [...tweets].concat(response.results)
                     setTweetsInit(newTweets);
                     setTweets(newTweets);
-                } else {
-                    alert("There was an error!");
                 }
-            }
+            }    
             apiTweetFeed(handleLoadNextResponse, nextUrl)
             console.log('nextUrl', nextUrl)
             console.log('next response');
