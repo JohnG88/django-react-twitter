@@ -24,3 +24,12 @@ export function apiTweetList(username, callback, nextUrl) {
     }
     backendLookup('GET', endpoint, callback)
 }
+
+export function apiTweetFeed(callback, nextUrl) {
+    let endpoint = '/tweets/feed/'
+    if (nextUrl !== null && nextUrl !== undefined) {
+        // replacing http://localhost:8000/api with empty string('')
+        endpoint = nextUrl.replace('http://localhost:8000/api', '')
+    }
+    backendLookup('GET', endpoint, callback)
+}
