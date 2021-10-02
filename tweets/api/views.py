@@ -110,8 +110,7 @@ def tweet_list_view(request, *args, **kwargs):
     # below is lookin for parameter ?username=john
     username = request.GET.get('username')
     if username != None:
-        
-        qs = qs.filter(user__username__iexact=username)
+        # qs = qs.filter(user__username__iexact=username)
         # efficient way of using line above
         # check in models.py, TweetQuerySet and Tweetmanager
         qs = qs.by_username(username)

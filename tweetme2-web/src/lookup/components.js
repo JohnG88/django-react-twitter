@@ -22,7 +22,7 @@ export function backendLookup(method, endpoint, callback, data) {
     // New instance of class
     const xhr = new XMLHttpRequest(); // like python, xhr = new SomeClass()
     
-    const url = `http://127.0.0.1:8000/api${endpoint}`;
+    const url = `http://localhost:8000/api${endpoint}`;
 
     xhr.responseType = 'json';
     xhr.open(method, url);

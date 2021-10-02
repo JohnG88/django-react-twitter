@@ -30,6 +30,7 @@ def profile_update_view(request, *args, **kwargs):
         profile_obj.save()
     context = {'form': form, 'btn_label': 'Save', 'title': 'Update Profile'}
     return render(request, 'profiles/form.html', context)
+    
 def profile_detail_view(request, username,  *args, **kwargs):
     # get profile of passed username
     qs = Profile.objects.filter(user__username=username)
