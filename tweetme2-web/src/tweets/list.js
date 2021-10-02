@@ -46,8 +46,9 @@ export function TweetsList(props) {
             const handleLoadNextResponse = (response, status) => {
                 if (status === 200) {
                     setNextUrl(response.next)
-                    setTweetsInit(response.results);
-                    setTweets(response.results);
+                    const newTweets = [...tweets].concat(response.results)
+                    setTweetsInit(newTweets);
+                    setTweets(newTweets);
                 } else {
                     alert("There was an error!");
                 }
